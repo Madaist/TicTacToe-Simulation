@@ -1,8 +1,8 @@
 import time
 
-ADANCIME_MAX = 6
-NR_COLOANE = 4
-POZITIE_X = 1
+ADANCIME_MAX = 1
+NR_COLOANE = 3
+POZITIE_X = 5
 
 
 # verifica daca lista data ca parametru contine elemente identice
@@ -119,13 +119,6 @@ class Joc:
 
 
 class Stare:
-    """
-    Clasa folosita de algoritmii minimax si alpha-beta
-    Are ca proprietate tabla de joc
-    Functioneaza cu conditia ca in cadrul clasei Joc sa fie definiti JMIN si JMAX (cei doi jucatori posibili)
-    De asemenea cere ca in clasa Joc sa fie definita si o metoda numita mutari() care ofera lista cu configuratiile posibile
-    in urma mutarii unui jucator
-    """
 
     def __init__(self, tabla_joc, j_curent, adancime, parinte=None, scor=None):
         self.tabla_joc = tabla_joc
@@ -159,30 +152,6 @@ class Stare:
     def __str__(self):
         sir = str(self.tabla_joc) + "(Juc curent:" + self.j_curent + ")\n"
         return sir
-
-
-""" Algoritmul MinMax """
-
-
-def min_max(stare):
-    if stare.adancime == 0 or stare.tabla_joc.final():
-        stare.scor = stare.tabla_joc.estimeaza_scor(stare.adancime)
-        return stare
-
-    # calculez toate mutarile posibile din starea curenta
-    stare.mutari_posibile = stare.mutari()
-
-    # aplic algoritmul minimax pe toate mutarile posibile (calculand astfel subarborii lor)
-    mutari_scor = [min_max(mutare) for mutare in stare.mutari_posibile]
-
-    if stare.j_curent == Joc.JMAX:
-        # daca jucatorul e JMAX aleg starea-fiica cu scorul maxim
-        stare.stare_aleasa = max(mutari_scor, key=lambda x: x.scor)
-    else:
-        # daca jucatorul e JMIN aleg starea-fiica cu scorul minim
-        stare.stare_aleasa = min(mutari_scor, key=lambda x: x.scor)
-    stare.scor = stare.stare_aleasa.scor
-    return stare
 
 
 def alpha_beta(alpha, beta, stare):
@@ -254,12 +223,10 @@ def main():
     print(str(tabla_curenta))
 
     # creare stare initiala
-    stare_curenta = Stare(tabla_curenta, 'x', ADANCIME_MAX)
+    stare_curenta = Stare(tabla_curenta, '0', ADANCIME_MAX)
 
     while True:
         if stare_curenta.j_curent == Joc.JMIN:
-            # Mutare calculator
-
             # preiau timpul in milisecunde de dinainte de mutare
             t_inainte = float(round(time.time() * 1000))
             stare_actualizata = alpha_beta(-500, 500, stare_curenta)
@@ -277,9 +244,7 @@ def main():
             # S-a realizat o mutare. Schimb jucatorul cu cel opus
             stare_curenta.j_curent = stare_curenta.jucator_opus()
 
-        else:  # jucatorul e JMAX (calculatorul)
-            # Mutare calculator
-
+        else:  # jucatorul e JMAX
             # preiau timpul in milisecunde de dinainte de mutare
             t_inainte = float(round(time.time() * 1000))
             stare_actualizata = alpha_beta(-500, 500, stare_curenta)

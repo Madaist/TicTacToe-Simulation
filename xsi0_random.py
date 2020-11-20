@@ -108,7 +108,6 @@ class Stare:
 
 def random_move(stare):
     if stare.tabla_joc.final():
-        stare.scor = stare.tabla_joc.estimeaza_scor(stare.adancime)
         return stare
 
     stare.mutari_posibile = stare.mutari()

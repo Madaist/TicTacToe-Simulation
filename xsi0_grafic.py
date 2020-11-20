@@ -2,9 +2,10 @@ import time
 
 import pygame, sys
 
-ADANCIME_MAX = 6
-NR_COLOANE = 5
-POZITIE_X = 1
+ADANCIME_MAX = 3
+# adancime 1, 2 pentru 3x3
+NR_COLOANE = 3
+POZITIE_X = 3
 
 
 def elem_identice(lista):
@@ -31,7 +32,6 @@ def deseneaza_grid(display, tabla):
         linie = ind // NR_COLOANE
         coloana = ind % NR_COLOANE
         patr = pygame.Rect(coloana * (w_gr + 1), linie * (h_gr + 1), w_gr, h_gr)
-        # print(str(coloana * (w_gr + 1)), str(linie * (h_gr + 1)))
         drt.append(patr)
         pygame.draw.rect(display, (255, 255, 255), patr)
         if tabla[ind] == 'x':
@@ -48,7 +48,7 @@ class Joc:
     GOL = '#'
 
     def __init__(self, tabla=None):
-        self.matr = tabla or [self.__class__.GOL] * NR_COLOANE**2
+        self.matr = tabla or [self.__class__.GOL] * NR_COLOANE ** 2
 
     def final(self):
         n = NR_COLOANE
@@ -69,7 +69,8 @@ class Joc:
 
         if rez:  # daca aveam vreo linie/coloana/diagonala identica, avem castigator
             return rez
-        elif self.__class__.GOL not in self.matr:  # daca nu mai avem spatii goale, inseamna ca toate pozitiile sunt completate si avem remiza
+        elif self.__class__.GOL not in self.matr:  # daca nu mai avem spatii goale, inseamna ca toate pozitiile sunt
+            # completate si avem remiza
             return 'remiza'
         else:
             return False  # altfel, inseamna ca nu am ajuns inca la finalul jocului
@@ -265,19 +266,18 @@ def main():
             print("Tabla dupa mutarea calculatorului")
             print(str(stare_curenta))
 
+            time.sleep(1)
             patratele = deseneaza_grid(ecran, stare_curenta.tabla_joc.matr)
             # preiau timpul in milisecunde de dupa mutare
             t_dupa = int(round(time.time() * 1000))
             print("Calculatorul a \"gandit\" timp de " + str(t_dupa - t_inainte) + " milisecunde.")
 
-            if (afis_daca_final(stare_curenta)):
+            if afis_daca_final(stare_curenta):
                 break
 
             # S-a realizat o mutare. Schimb jucatorul cu cel opus
             stare_curenta.j_curent = stare_curenta.jucator_opus()
 
-
-        # --------------------------------
         else:  # jucatorul e JMAX (calculatorul)
             # Mutare calculator
 
@@ -288,12 +288,13 @@ def main():
             print("Tabla dupa mutarea calculatorului")
             print(str(stare_curenta))
 
+            time.sleep(1)
             patratele = deseneaza_grid(ecran, stare_curenta.tabla_joc.matr)
             # preiau timpul in milisecunde de dupa mutare
             t_dupa = int(round(time.time() * 1000))
             print("Calculatorul a \"gandit\" timp de " + str(t_dupa - t_inainte) + " milisecunde.")
 
-            if (afis_daca_final(stare_curenta)):
+            if afis_daca_final(stare_curenta):
                 break
 
             # S-a realizat o mutare. Schimb jucatorul cu cel opus
