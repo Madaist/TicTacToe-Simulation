@@ -1,8 +1,12 @@
 import time
 
-ADANCIME_MAX = 1
+ADANCIME_MAX = 6
 NR_COLOANE = 3
 POZITIE_X = 5
+
+NR_CASTIG_X = 0
+NR_CASTIG_0 = 0
+NR_REMIZE = 0
 
 
 # verifica daca lista data ca parametru contine elemente identice
@@ -200,13 +204,18 @@ def alpha_beta(alpha, beta, stare):
 
 
 def afis_daca_final(stare_curenta):
+    global NR_REMIZE, NR_CASTIG_0, NR_CASTIG_X
     final = stare_curenta.tabla_joc.final()
     if final:
         if final == "remiza":
-            print("Remiza!")
+            #########print("Remiza!")
+            NR_REMIZE += 1
         else:
-            print("A castigat " + final)
-
+            if final == Joc.JMAX:
+                NR_CASTIG_X += 1
+            else:
+                NR_CASTIG_0 += 1
+            ########## print("A castigat " + final)
         return True
 
     return False
@@ -219,8 +228,8 @@ def main():
     # initializare tabla
     tabla_curenta = Joc()
     tabla_curenta.matr[POZITIE_X] = 'x'
-    print("Tabla initiala")
-    print(str(tabla_curenta))
+    #########print("Tabla initiala")
+    #########print(str(tabla_curenta))
 
     # creare stare initiala
     stare_curenta = Stare(tabla_curenta, '0', ADANCIME_MAX)
@@ -231,12 +240,12 @@ def main():
             t_inainte = float(round(time.time() * 1000))
             stare_actualizata = alpha_beta(-500, 500, stare_curenta)
             stare_curenta.tabla_joc = stare_actualizata.stare_aleasa.tabla_joc
-            print("Tabla dupa mutarea calculatorului")
-            print(str(stare_curenta))
+            #########print("Tabla dupa mutarea calculatorului")
+            #########print(str(stare_curenta))
 
             # preiau timpul in milisecunde de dupa mutare
             t_dupa = int(round(time.time() * 1000))
-            print("Calculatorul a \"gandit\" timp de " + str(t_dupa - t_inainte) + " milisecunde.")
+            #########print("Calculatorul a \"gandit\" timp de " + str(t_dupa - t_inainte) + " milisecunde.")
 
             if afis_daca_final(stare_curenta):
                 break
@@ -249,12 +258,12 @@ def main():
             t_inainte = float(round(time.time() * 1000))
             stare_actualizata = alpha_beta(-500, 500, stare_curenta)
             stare_curenta.tabla_joc = stare_actualizata.stare_aleasa.tabla_joc
-            print("Tabla dupa mutarea calculatorului")
-            print(str(stare_curenta))
+            #######print("Tabla dupa mutarea calculatorului")
+            #######print(str(stare_curenta))
 
             # preiau timpul in milisecunde de dupa mutare
             t_dupa = float(round(time.time() * 1000))
-            print("Calculatorul a \"gandit\" timp de " + str(t_dupa - t_inainte) + " milisecunde.")
+            #######print("Calculatorul a \"gandit\" timp de " + str(t_dupa - t_inainte) + " milisecunde.")
 
             if afis_daca_final(stare_curenta):
                 break
@@ -264,4 +273,14 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    for pozitie in range(NR_COLOANE ** 2):
+        POZITIE_X = pozitie
+        print("Pentru pozitia ", POZITIE_X, " a lui x: ")
+        main()
+        print("X a castigat de ", NR_CASTIG_X, " ori")
+        print("0 a castigat de ", NR_CASTIG_0, " ori")
+        print("Remize: ", NR_REMIZE)
+        print()
+        NR_CASTIG_X = 0
+        NR_CASTIG_0 = 0
+        NR_REMIZE = 0

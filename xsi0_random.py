@@ -1,8 +1,13 @@
 import time
 import random
 
-NR_COLOANE = 3
-POZITIE_X = 1
+NR_COLOANE = 5
+POZITIE_X = 0
+
+NR_JOCURI = 1000
+NR_CASTIG_X = 0
+NR_CASTIG_0 = 0
+NR_REMIZE = 0
 
 
 # verifica daca lista data ca parametru contine elemente identice
@@ -112,7 +117,7 @@ def random_move(stare):
 
     stare.mutari_posibile = stare.mutari()
     nr_posibilitati = len(stare.mutari_posibile)
-    poz_mutare = random.randint(0, nr_posibilitati-1)
+    poz_mutare = random.randint(0, nr_posibilitati - 1)
 
     stare.stare_aleasa = stare.mutari_posibile[poz_mutare]
 
@@ -120,12 +125,18 @@ def random_move(stare):
 
 
 def afis_daca_final(stare_curenta):
+    global NR_REMIZE, NR_CASTIG_0, NR_CASTIG_X
     final = stare_curenta.tabla_joc.final()
     if final:
         if final == "remiza":
-            print("Remiza!")
+            NR_REMIZE += 1
+            #############print("Remiza!")
         else:
-            print("A castigat " + final)
+            if final == Joc.JMAX:
+                NR_CASTIG_X += 1
+            else:
+                NR_CASTIG_0 += 1
+           ########## print("A castigat " + final)
 
         return True
 
@@ -139,8 +150,8 @@ def main():
     # initializare tabla
     tabla_curenta = Joc()
     tabla_curenta.matr[POZITIE_X] = 'x'
-    print("Tabla initiala")
-    print(str(tabla_curenta))
+    ############ print("Tabla initiala")
+    ############print(str(tabla_curenta))
 
     # creare stare initiala
     stare_curenta = Stare(tabla_curenta, '0')
@@ -151,12 +162,12 @@ def main():
             t_inainte = float(round(time.time() * 1000))
             stare_actualizata = random_move(stare_curenta)
             stare_curenta.tabla_joc = stare_actualizata.stare_aleasa.tabla_joc
-            print("Tabla dupa mutarea calculatorului")
-            print(str(stare_curenta))
+            ##############print("Tabla dupa mutarea calculatorului")
+            ##############print(str(stare_curenta))
 
             # preiau timpul in milisecunde de dupa mutare
             t_dupa = int(round(time.time() * 1000))
-            print("Calculatorul a \"gandit\" timp de " + str(t_dupa - t_inainte) + " milisecunde.")
+            #################print("Calculatorul a \"gandit\" timp de " + str(t_dupa - t_inainte) + " milisecunde.")
 
             if afis_daca_final(stare_curenta):
                 break
@@ -169,12 +180,12 @@ def main():
             t_inainte = float(round(time.time() * 1000))
             stare_actualizata = random_move(stare_curenta)
             stare_curenta.tabla_joc = stare_actualizata.stare_aleasa.tabla_joc
-            print("Tabla dupa mutarea calculatorului")
-            print(str(stare_curenta))
+            #################print("Tabla dupa mutarea calculatorului")
+            #################print(str(stare_curenta))
 
             # preiau timpul in milisecunde de dupa mutare
             t_dupa = float(round(time.time() * 1000))
-            print("Calculatorul a \"gandit\" timp de " + str(t_dupa - t_inainte) + " milisecunde.")
+            ################print("Calculatorul a \"gandit\" timp de " + str(t_dupa - t_inainte) + " milisecunde.")
 
             if afis_daca_final(stare_curenta):
                 break
@@ -184,4 +195,18 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    for pozitie in range(NR_COLOANE**2):
+        POZITIE_X = pozitie
+        print("Pentru pozitia ", POZITIE_X, " a lui x: ")
+        for joc in range(NR_JOCURI):
+            main()
+        print("X a castigat de ", NR_CASTIG_X, " ori")
+        print("0 a castigat de ", NR_CASTIG_0, " ori")
+        print("Remize: ", NR_REMIZE)
+        print()
+        NR_CASTIG_X = 0
+        NR_CASTIG_0 = 0
+        NR_REMIZE = 0
+
+
+
